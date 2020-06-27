@@ -7,10 +7,10 @@ if(canvas.getContext){
     var grass_density = 10;
 
     var zebras = new Array(100).fill(0);
-    zebras = zebras.map(item => new Zebra())
+    zebras = zebras.map(item => new Zebra());
 
-    var lions = new Array(1).fill(0);
-    lions = lions.map(item => new Lion())
+    var lions = new Array(10).fill(0);
+    lions = lions.map(item => new Lion());
 
     var grass = new Array(Math.floor(canvas.width / grass_density)).fill(0);
     for(let i = 0; i < canvas.width / grass_density; i++) {
@@ -38,16 +38,16 @@ function draw() {
 
     zebras.forEach(item => {
         item.draw();
-        // if(!item.eat()){
-        item.eat();
-        item.move();
-        // }
+        if(!item.eat() && item.status === 0){
+            item.move();
+        }
     });
 
     lions.forEach(item => {
         item.draw();
         // if (Math.random() < 0.1){
-            item.move();
+        item.eat();
+        item.move();
         // }
     });
 }
