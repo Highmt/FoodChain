@@ -8,14 +8,16 @@ class Creature{
         this.vel = 5;
         this.direction = 0;
         this.status = status;
-        this.collor = collor
+        this.collor = collor;
+        this.hungry_rate = Math.round(Math.random() * 10000);
     }
     move(){
         if(Math.random() < 0.10){
-            this.direction = Math.random() * Math.PI * 2
+            this.direction = Math.random() * Math.PI * 2;
         }
         this.x = (this.x + Math.round(this.vel * Math.cos(this.direction)) + canvas.width) % canvas.width;
         this.y = (this.y + Math.round(this.vel * Math.sin(this.direction)) + canvas.height) % canvas.height;
+        this.hungry_rate--;
     }
     draw(){
         ctx.beginPath();
@@ -38,6 +40,15 @@ class Zebra extends Creature{
     constructor(){
         super(Math.round(Math.random() * canvas.width), Math.round(Math.random() * canvas.height), 5, "#FFFFFF");
     }
+
+    eat(){
+        if(this.hungry_rate < 8000 && grass[Math.floor(this.x / grass_density)][Math.floor(this.y / grass_density)].status > 0){
+            grass[Math.floor(this.x / grass_density)][Math.floor(this.y / grass_density)].status -=1;
+            // this.hungry_rate += 2000;
+            return true;
+        }
+        return false;
+    }
 }
 
 // 草
@@ -48,7 +59,7 @@ class Grass extends Creature{
     draw(){
         ctx.beginPath();
         switch(this.status){
-            case 0:
+            case 2:
                 ctx.moveTo(this.x, this.y - 5); //最初の点の場所
                 ctx.lineTo(this.x - 5, this.y + 5); //2番目の点の場所
                 ctx.lineTo(this.x + 5, this.y + 5); //3番目の点の場所
