@@ -20,7 +20,6 @@ if(canvas.getContext){
         }
     }
 
-
     setInterval(draw, 20);
 }
 
@@ -45,9 +44,8 @@ function draw() {
 
     lions.forEach(item => {
         item.draw();
-        // if (Math.random() < 0.1){
-        item.eat();
-        item.move();
-        // }
+        if(!item.eat() && item.status === 0){
+            item.move();
+        }
     });
 }

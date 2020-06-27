@@ -19,9 +19,12 @@ class Creature{
         this.x = (this.x + Math.round(this.vel * Math.cos(this.direction)) + canvas.width) % canvas.width;
         this.y = (this.y + Math.round(this.vel * Math.sin(this.direction)) + canvas.height) % canvas.height;
         this.hungry_rate--;
+        if(this.hungry_rate === 0){
+            this.status = 1;
+        }
     }
-    draw(){
 
+    draw(){
             ctx.beginPath();
             ctx.arc(this.x, this.y, this.size, 0, Math.PI*2);
             if(this.status === 0){
@@ -42,11 +45,13 @@ class Lion extends Creature{
     }
     eat(){
         zebras.forEach((item) => {
-            if((item.x - this.x)*(item.x - this.x) + (item.y - this.y)*(item.y - this.y) < 400){
+            if(this.hungry_rate < 7000 && (item.x - this.x)*(item.x - this.x) + (item.y - this.y)*(item.y - this.y) < 400){
                 item.status = 1;
+                this.hungry_rate += 3000;
+                return true;
             }
         });
-        return null;
+        return false;
     }
 }
 
