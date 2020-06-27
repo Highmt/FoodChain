@@ -5,17 +5,21 @@ class Creature{
     constructor(x, y, status, collor){
         this.x = x;
         this.y = y;
+        this.vel = 5;
+        this.direction = 0;
         this.status = status;
         this.collor = collor
     }
-    move(dx, dy){
-        this.x = (this.x + dx + canvas.width) % canvas.width;
-        this.y = (this.y + dy + canvas.height) % canvas.height;
-
+    move(){
+        if(Math.random() < 0.10){
+            this.direction = Math.random() * Math.PI * 2
+        }
+        this.x = (this.x + Math.round(this.vel * Math.cos(this.direction)) + canvas.width) % canvas.width;
+        this.y = (this.y + Math.round(this.vel * Math.sin(this.direction)) + canvas.height) % canvas.height;
     }
     draw(){
         ctx.beginPath();
-        ctx.arc(this.x, this.y, 5, 0, Math.PI*2);
+        ctx.arc(this.x, this.y, 10, 0, Math.PI*2);
         ctx.fillStyle = this.collor;
         ctx.fill();
         ctx.closePath();
@@ -25,13 +29,6 @@ class Creature{
 // ライオン
 class Lion extends Creature{
     constructor(){
-        super(Math.round(Math.random() * 10), Math.round(Math.random() * 10), 5, "#990000");
-    }
-}
-
-// 草
-class Grass extends Creature{
-    constructor(){
         super(Math.round(Math.random() * canvas.width), Math.round(Math.random() * canvas.height), 5, "#990000");
     }
 }
@@ -39,13 +36,34 @@ class Grass extends Creature{
 // シマウマ
 class Zebra extends Creature{
     constructor(){
-        super(x, y, status);
+        super(Math.round(Math.random() * canvas.width), Math.round(Math.random() * canvas.height), 5, "#FFFFFF");
     }
 }
-// トムソンガゼル
-class Thomsonii extends Creature{
-    constructor(){
-        super(x, y, status);
+
+// 草
+class Grass extends Creature{
+    constructor(x, y, s){
+        super(x, y, s, "rgb(0,225,0)");
+    }
+    draw(){
+        ctx.beginPath();
+        switch(this.status){
+            case 0:
+                ctx.moveTo(this.x, this.y - 5); //最初の点の場所
+                ctx.lineTo(this.x - 5, this.y + 5); //2番目の点の場所
+                ctx.lineTo(this.x + 5, this.y + 5); //3番目の点の場所
+                ctx.fill();
+            break;
+
+            case 1:
+                ctx.moveTo(this.x - 2.5, this.y); //最初の点の場所
+                ctx.lineTo(this.x - 5, this.y + 5); //2番目の点の場所
+                ctx.lineTo(this.x + 5, this.y + 5); //3番目の点の場所
+                ctx.lineTo(this.x + 2.5, this.y)
+                ctx.fill();
+            break;
+        }
+        ctx.closePath();	//三角形の最後の線 closeさせる
     }
 }
 
