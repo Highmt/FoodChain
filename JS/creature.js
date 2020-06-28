@@ -39,7 +39,7 @@ class Creature{
     give_nutrient(){
         for(let i = -1; i < 2; i+=1){
             for(let j = -1; j < 2; j+=1){
-                grass[(Math.floor(this.x / grass_density) + i + grass.length) % grass.length][(Math.floor(this.y / grass_density) + j + grass.length) % grass.length].status += 1;
+                grass[(Math.floor(this.x / grass_density) + i + grass.length) % grass.length][(Math.floor(this.y / grass_density) + j + grass[0].length) % grass[0].length].status += 1;
             }
         }
     }

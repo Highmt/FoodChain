@@ -7,10 +7,10 @@ if(canvas.getContext){
     var grass_density = 10;
     var grass_rate = 0.2;
 
-    var zebras = new Array(50).fill(0);
+    var zebras = new Array(500).fill(0);
     zebras = zebras.map(item => new Zebra());
 
-    var lions = new Array(10).fill(0);
+    var lions = new Array(100).fill(0);
     lions = lions.map(item => new Lion());
 
     var animals = zebras.concat(lions);
