@@ -5,9 +5,9 @@ if(canvas.getContext){
     canvas.width = document.documentElement.clientWidth-10;
     canvas.height = document.documentElement.clientHeight-10;
     var grass_density = 10;
-    var grass_rate = 0.2;
+    var grass_rate = 0.5;
 
-    var zebras = new Array(500).fill(0);
+    var zebras = new Array(0).fill(0);
     zebras = zebras.map(item => new Zebra());
 
     var lions = new Array(100).fill(0);
