@@ -10,7 +10,8 @@ class Creature{
         this.direction = 0;
         this.status = status;
         this.collor = collor;
-        this.hungry_rate = Math.round(Math.random() * 10000);
+        this.hungry_rate = Math.round(Math.random() * 500);
+        this.body_count = 0;
     }
     move(){
         if(Math.random() < 0.05){
@@ -19,9 +20,12 @@ class Creature{
         this.x = (this.x + Math.round(this.vel * Math.cos(this.direction)) + canvas.width) % canvas.width;
         this.y = (this.y + Math.round(this.vel * Math.sin(this.direction)) + canvas.height) % canvas.height;
         this.hungry_rate--;
+        if(this.hungry_rate < 0){
+            this.status = 1;
+        }
     }
-    draw(){
 
+    draw(){
             ctx.beginPath();
             ctx.arc(this.x, this.y, this.size, 0, Math.PI*2);
             if(this.status === 0){
@@ -41,12 +45,15 @@ class Lion extends Creature{
         this.target = null;
     }
     eat(){
+        if(this.hungry_rate < 800)
         zebras.forEach((item) => {
-            if((item.x - this.x)*(item.x - this.x) + (item.y - this.y)*(item.y - this.y) < 400){
+            if(item.status === 0 && (item.x - this.x)*(item.x - this.x) + (item.y - this.y)*(item.y - this.y) < 400){
                 item.status = 1;
+                this.hungry_rate += 300;
+                return true;
             }
         });
-        return null;
+        return false;
     }
 }
 
@@ -57,9 +64,9 @@ class Zebra extends Creature{
     }
 
     eat(){
-        if(this.hungry_rate < 8000 && grass[Math.floor(this.x / grass_density)][Math.floor(this.y / grass_density)].status > 0){
+        if(this.hungry_rate < 800 && grass[Math.floor(this.x / grass_density)][Math.floor(this.y / grass_density)].status > 0){
             grass[Math.floor(this.x / grass_density)][Math.floor(this.y / grass_density)].status -=1;
-            this.hungry_rate += 500;
+            this.hungry_rate += 300;
         }
     }
 }
