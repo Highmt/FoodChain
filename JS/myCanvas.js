@@ -7,10 +7,10 @@ if(canvas.getContext){
     var grass_density = 10;
     var grass_rate = 0.5;
 
-    var zebras = new Array(0).fill(0);
+    var zebras = new Array(100).fill(0);
     zebras = zebras.map(item => new Zebra());
 
-    var lions = new Array(100).fill(0);
+    var lions = new Array(0).fill(0);
     lions = lions.map(item => new Lion());
 
     var animals = zebras.concat(lions);
@@ -33,7 +33,21 @@ function draw() {
     ctx.fillStyle="rgb(0,225,0)";//塗りつぶしの色
     grass.forEach(items => {
         items.forEach(item => {
+            // 発芽処理
+            if(item.status === 0 && Math.random() < 0.1/(grass.length * grass[0].length)) { // 発芽する
+                item.status = 1;
+                item.age = 0;
+            }
+
             if(item.status > 0){
+                if(item.age < item.lifespan){
+                    item.age++;
+                    if (item.age < item.lifespan * 0.6) {
+                        item.status = 1;
+                    }else {
+                        item.status = 2;
+                    }
+                }
                 item.draw();
             }
         });
@@ -51,7 +65,7 @@ function draw() {
         if(item.body_count > 100){  // 死亡して一定時間経過すると死体を削除
             // 死体が朽ちる時に草を成長させる
             item.give_nutrient();
-            animals.splice(i, 1);  //配列からの取り除き方用検討
+            animals.splice(i, 1);  //配列から削除
         }
     });
 }
