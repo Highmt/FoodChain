@@ -2,13 +2,13 @@
 
 //生き物
 class Creature{
-    constructor(status, vel, collor){
+    constructor(vel, collor){
         this.x = Math.round(Math.random() * canvas.width);
         this.y = Math.round(Math.random() * canvas.height);
         this.vel = vel;
         this.size = 10;
         this.direction = 0;
-        this.status = status;
+        this.status = 0;
         this.collor = collor;
         this.hungry_rate = Math.round(Math.random() * 500);
         this.body_count = 0;
@@ -36,12 +36,19 @@ class Creature{
             ctx.fill();
             ctx.closePath();
     }
+    give_nutrient(){
+        for(let i = -1; i < 2; i+=1){
+            for(let j = -1; j < 2; j+=1){
+                grass[(Math.floor(this.x / grass_density) + i + grass.length) % grass.length][(Math.floor(this.y / grass_density) + j + grass[0].length) % grass[0].length].status += 1;
+            }
+        }
+    }
 }
 
 // ライオン
 class Lion extends Creature{
     constructor(){
-        super(0, 3, "#990000");
+        super(3, "#990000");
         this.target = null;
     }
     eat(){
@@ -60,7 +67,7 @@ class Lion extends Creature{
 // シマウマ
 class Zebra extends Creature{
     constructor(){
-        super(0, 2, "#FFFFFF");
+        super(2, "#FFFFFF");
     }
 
     eat(){
@@ -73,12 +80,18 @@ class Zebra extends Creature{
 
 // 草
 class Grass extends Creature{
-    constructor(x, y, s){
-        super(s, 0, "rgb(0,225,0)");
+    constructor(x, y){
+        super(0, "rgb(0,225,0)");
         this.x = x;
         this.y = y;
+        if(Math.random() < grass_rate){
+            this.status = Math.floor(Math.random() * 2) + 1;
+        }
     }
     draw(){
+        if(this.status > 2){
+            this.status = 2;
+        }
         ctx.beginPath();
         switch(this.status){
             case 2:

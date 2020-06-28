@@ -5,11 +5,12 @@ if(canvas.getContext){
     canvas.width = document.documentElement.clientWidth-10;
     canvas.height = document.documentElement.clientHeight-10;
     var grass_density = 10;
+    var grass_rate = 0.2;
 
-    var zebras = new Array(50).fill(0);
+    var zebras = new Array(500).fill(0);
     zebras = zebras.map(item => new Zebra());
 
-    var lions = new Array(10).fill(0);
+    var lions = new Array(100).fill(0);
     lions = lions.map(item => new Lion());
 
     var animals = zebras.concat(lions);
@@ -47,7 +48,9 @@ function draw() {
         if(!item.eat() && item.status === 0){
             item.move();
         }
-        if(item.body_count > 100){
+        if(item.body_count > 100){  // 死亡して一定時間経過すると死体を削除
+            // 死体が朽ちる時に草を成長させる
+            item.give_nutrient();
             animals.splice(i, 1);  //配列からの取り除き方用検討
         }
     });
