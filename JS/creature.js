@@ -12,7 +12,7 @@ class Creature{
         this.collor = collor; //TODO 審議
         this.hungry_rate = Math.round(Math.random() * 500);
         this.body_count = 0;
-        this.age = Math.random() * 20;
+        this.age = Math.random() * 500;
         this.lifespan = 1000;
     }
     move(){
@@ -26,6 +26,7 @@ class Creature{
             this.status = 1;
         }else {
             this.age++; // 年をとる
+            this.size = -Math.round(((this.age - this.lifespan/4*3) * (this.age - this.lifespan/4*3)) / (this.lifespan / 2 * this.lifespan / 2) * 4) + 12
             this.hungry_rate--;
         }
     }
@@ -50,10 +51,10 @@ class Creature{
                 let grass_y = (Math.floor(this.y / grass_density) + j + grass[0].length) % grass[0].length;
                 grass[grass_x][grass_y].status++;
                 grass[grass_x][grass_y].age += grass[grass_x][grass_y].lifespan / 2;
-
             }
         }
     }
+
 }
 
 // ライオン
