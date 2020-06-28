@@ -36,16 +36,16 @@ class Creature{
             this.status = 1; // 餓死or寿命
         }else {
             this.age++; // 年をとる
-            this.size = -Math.round(((this.age - this.lifespan/4*3) * (this.age - this.lifespan/4*3)) / (this.lifespan / 2 * this.lifespan / 2) * 4) + 12
+            this.size = -Math.round(((this.age - this.lifespan/4*3) * (this.age - this.lifespan/4*3)) / (this.lifespan / 2 * this.lifespan / 2) * 3) + 12
             this.hungry_rate--; // 腹が減る
         }
         //　出産の処理呼び出し部
-        if(this.age % Math.round(this.lifespan / 3) < 1 && this.hungry_rate > 300 && this.parent === null){
+        if(this.age % Math.round(this.lifespan / 5 + 1) < 1 && this.hungry_rate > 300 && this.age > Math.round(this.lifespan / 5 * 2)){
             this.birth();
         }
 
         // 成長したら親元を離れる
-        if(this.parent != null && this.age > this.lifespan / 3 - 2){
+        if(this.parent != null && this.age > this.lifespan / 8){
             console.log("child");
             this.parent.children.splice(this.parent.children.indexOf(this), 1);
             this.parent = null;
@@ -139,7 +139,7 @@ class Zebra extends Creature{
         }
     }
     birth(){
-        this.vel = 1;
+        this.vel = 2;
         let baby = new Zebra(this);
         this.children.push(baby);
         zebras.push(baby);
