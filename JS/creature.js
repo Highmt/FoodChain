@@ -66,6 +66,7 @@ class Creature{
             this.x = (this.x + Math.round(this.vel * Math.cos(this.direction)) + canvas.width) % canvas.width;
             this.y = (this.y + Math.round(this.vel * Math.sin(this.direction)) + canvas.height) % canvas.height;
         }else {
+            this.direction = this.parent.direction;
             this.x = (this.parent.x - Math.round((this.parent.size + this.size + 2) * Math.cos(this.parent.direction)) + canvas.width) % canvas.width;
             this.y = (this.parent.y - Math.round((this.parent.size + this.size + 2) * Math.sin(this.parent.direction)) + canvas.height) % canvas.height;
         }
@@ -135,7 +136,7 @@ class Zebra extends Creature{
         let grass_y = (Math.floor(this.y / grass_density) + grass[0].length) % grass[0].length;
         if(this.hungry_rate < 800 && grass[grass_x][grass_y].status > 0){
             grass[grass_x][grass_y].status--;
-            this.hungry_rate += 100;
+            this.hungry_rate += 30;
         }
     }
     birth(){
