@@ -8,10 +8,10 @@ if(canvas.getContext){
     var grass_rate = 0.5;
 
     var zebras = new Array(100).fill(0);
-    zebras = zebras.map(item => new Zebra());
+    zebras = zebras.map(item => new Zebra(null));
 
-    var lions = new Array(0).fill(0);
-    lions = lions.map(item => new Lion());
+    var lions = new Array(10).fill(0);
+    lions = lions.map(item => new Lion(null));
 
     var animals = zebras.concat(lions);
 
@@ -58,6 +58,7 @@ function draw() {
         if (item.status === 1) {
             item.body_count++;
         }
+        item.update();
         item.draw();
         if(!item.eat() && item.status === 0){
             item.move();

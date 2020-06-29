@@ -2,32 +2,73 @@
 
 //生き物
 class Creature{
-    constructor(vel, collor){
-        this.x = Math.round(Math.random() * canvas.width);
-        this.y = Math.round(Math.random() * canvas.height);
-        this.vel = vel;
+    constructor(vel, collor, parent){
+
+        this.init_vel = vel;
+        if(parent !== null){
+            this.x = (parent.x - Math.round((parent.size + 5) * Math.cos(parent.direction)) + canvas.width) % canvas.width;
+            this.y = (parent.y - Math.round((parent.size + 5) * Math.sin(parent.direction)) + canvas.height) % canvas.height;
+            this.vel = parent.vel;
+            this.direction = parent.direction;
+            this.hungry_rate = 500;
+            this.age = 1;
+            this.parent = parent;
+        }else{
+            this.x = Math.round(Math.random() * canvas.width);
+            this.y = Math.round(Math.random() * canvas.height);
+            this.vel = vel;
+            this.direction = Math.random() * Math.PI * 2;
+            this.hungry_rate = Math.round(Math.random() * 500) + 200;
+            this.age = Math.random() * 500;
+            this.parent = null;
+        }
+
         this.size = 10;
-        this.direction = 0;
         this.status = 0;
         this.collor = collor; //TODO 審議
-        this.hungry_rate = Math.round(Math.random() * 500);
         this.body_count = 0;
-        this.age = Math.random() * 500;
         this.lifespan = 1000;
+        this.children = [];
     }
-    move(){
-        if(Math.random() < 0.05){
-            this.direction = Math.random() * Math.PI * 2;
-        }
-        this.x = (this.x + Math.round(this.vel * Math.cos(this.direction)) + canvas.width) % canvas.width;
-        this.y = (this.y + Math.round(this.vel * Math.sin(this.direction)) + canvas.height) % canvas.height;
 
+    update(){
         if(this.hungry_rate < 0 || this.age > this.lifespan){
-            this.status = 1;
+            this.status = 1; // 餓死or寿命
         }else {
             this.age++; // 年をとる
-            this.size = -Math.round(((this.age - this.lifespan/4*3) * (this.age - this.lifespan/4*3)) / (this.lifespan / 2 * this.lifespan / 2) * 4) + 12
-            this.hungry_rate--;
+            this.size = -Math.round(((this.age - this.lifespan/4*3) * (this.age - this.lifespan/4*3)) / (this.lifespan / 2 * this.lifespan / 2) * 3) + 12
+            this.hungry_rate--; // 腹が減る
+        }
+        //　出産の処理呼び出し部
+        if(this.age % Math.round(this.lifespan / 5 + 1) < 1 && this.hungry_rate > 300 && this.age > Math.round(this.lifespan / 5 * 2)){
+            this.birth();
+        }
+
+        // 成長したら親元を離れる
+        if(this.parent != null && this.age > this.lifespan / 8){
+            console.log("child");
+            this.parent.children.splice(this.parent.children.indexOf(this), 1);
+            this.parent = null;
+        }
+
+        //　子供が親元を離れたら親の速度を元に戻す
+        if(this.children.length === 0){
+            this.vel = this.init_vel;
+        }
+
+    }
+
+    move(){
+        if(this.parent === null){
+            if(Math.random() < 0.05){
+                this.direction = Math.random() * Math.PI * 2;
+            }
+            this.x = (this.x + Math.round(this.vel * Math.cos(this.direction)) + canvas.width) % canvas.width;
+            this.y = (this.y + Math.round(this.vel * Math.sin(this.direction)) + canvas.height) % canvas.height;
+        }else {
+            this.direction = this.parent.direction;
+            this.x = (this.parent.x - Math.round((this.parent.size + this.size + 2) * Math.cos(this.parent.direction)) + canvas.width) % canvas.width;
+            this.y = (this.parent.y - Math.round((this.parent.size + this.size + 2) * Math.sin(this.parent.direction)) + canvas.height) % canvas.height;
         }
     }
 
@@ -59,8 +100,8 @@ class Creature{
 
 // ライオン
 class Lion extends Creature{
-    constructor(){
-        super(3, "#990000");
+    constructor(parent){
+        super(3, "#990000", parent);
         this.target = null;
     }
     eat(){
@@ -75,12 +116,19 @@ class Lion extends Creature{
             return false;
         }
     }
+
+    birth(){
+        let baby = new Lion(this);
+        this.children.push(baby);
+        lions.push(baby);
+        animals.push(baby);
+    }
 }
 
 // シマウマ
 class Zebra extends Creature{
-    constructor(){
-        super(2, "#FFFFFF");
+    constructor(parent){
+        super(2, "#FFFFFF", parent);
     }
 
     eat(){
@@ -88,15 +136,22 @@ class Zebra extends Creature{
         let grass_y = (Math.floor(this.y / grass_density) + grass[0].length) % grass[0].length;
         if(this.hungry_rate < 800 && grass[grass_x][grass_y].status > 0){
             grass[grass_x][grass_y].status--;
-            this.hungry_rate += 100;
+            this.hungry_rate += 30;
         }
+    }
+    birth(){
+        this.vel = 2;
+        let baby = new Zebra(this);
+        this.children.push(baby);
+        zebras.push(baby);
+        animals.push(baby);
     }
 }
 
 // 草
 class Grass extends Creature{
     constructor(x, y){
-        super(0, "rgb(0,225,0)");
+        super(0, "rgb(0,225,0)", null);
         this.x = x;
         this.y = y;
         this.lifespan = 2000
